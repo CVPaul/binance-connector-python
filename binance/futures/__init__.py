@@ -1,10 +1,11 @@
 from binance.api import API
+from binance.constant import _COIN_M_API_
 
 
 class CoinM(API):
     def __init__(self, api_key=None, api_secret=None, **kwargs):
         if "base_url" not in kwargs:
-            kwargs["base_url"] = "https://api.binance.com"
+            kwargs["base_url"] = f"https://{_COIN_M_API_}.binance.com"
         super().__init__(api_key, api_secret, **kwargs)
 
     # MARKETS
@@ -16,7 +17,7 @@ class CoinM(API):
     from binance.futures.coin_m._market import historical_trades
     from binance.futures.coin_m._market import agg_trades
     from binance.futures.coin_m._market import klines
-    from binance.futures.coin_m._market import ui_klines
+    from binance.futures.coin_m._market import ext_klines
     from binance.futures.coin_m._market import avg_price
     from binance.futures.coin_m._market import ticker_24hr
     from binance.futures.coin_m._market import ticker_price

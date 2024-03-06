@@ -159,7 +159,7 @@ def klines(self, symbol: str, interval: str, **kwargs):
         symbol (str): the trading pair
         interval (str): the interval of kline, e.g 1s, 1m, 5m, 1h, 1d, etc.
     Keyword Args:
-        limit (int, optional): limit the results. Default 500; max 1000.
+        limit (int, optional): limit the results. Default 500; max 1500.
         startTime (int, optional): Timestamp in ms to get aggregate trades from INCLUSIVE.
         endTime (int, optional): Timestamp in ms to get aggregate trades until INCLUSIVE.
     """
@@ -169,25 +169,29 @@ def klines(self, symbol: str, interval: str, **kwargs):
     return self.query(f"/{_COIN_M_API_}/{_COIN_M_VER_}/klines", params)
 
 
-def ui_klines(self, symbol: str, interval: str, **kwargs):
-    """Kline/Candlestick Data
+def ext_klines(self, symbol: str, interval: str, kind: str = '', **kwargs):
+    """['premiumIndex'|'continuous'|'indexPrice'|'marketPrice']Kline/Candlestick Data
 
-    GET /{_COIN_M_API_}/{_COIN_M_VER_}/uiKlines
+    GET /{_COIN_M_API_}/{_COIN_M_VER_}/klines
 
-    https://binance-docs.github.io/apidocs/delivery/en/#uiklines
+    https://binance-docs.github.io/apidocs/delivery/en/#kline-candlestick-data
 
     Args:
         symbol (str): the trading pair
         interval (str): the interval of kline, e.g 1s, 1m, 5m, 1h, 1d, etc.
+        kind (str): the type of kline, e.g: ''(default), continuous, indexPrice, marketPrice
     Keyword Args:
-        limit (int, optional): limit the results. Default 500; max 1000.
+        limit (int, optional): limit the results. Default 500; max 1500.
         startTime (int, optional): Timestamp in ms to get aggregate trades from INCLUSIVE.
         endTime (int, optional): Timestamp in ms to get aggregate trades until INCLUSIVE.
     """
     check_required_parameters([[symbol, "symbol"], [interval, "interval"]])
 
     params = {"symbol": symbol, "interval": interval, **kwargs}
-    return self.query(f"/{_COIN_M_API_}/{_COIN_M_VER_}/uiKlines", params)
+    if kind in {'continuous', 'indexPrice'}:
+        pair = params.pop('symbol')
+        params['pair'] = pair
+    return self.query(f"/{_COIN_M_API_}/{_COIN_M_VER_}/{kind}Klines", params)
 
 
 def avg_price(self, symbol: str):
