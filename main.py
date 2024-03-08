@@ -5,6 +5,8 @@
 import os
 import sys
 import time
+import json
+import pandas as pd
 
 from binance.futures import CoinM
 from datetime import datetime as dt
@@ -24,11 +26,17 @@ private_key = "../private_key.pem"
 private_key_pass = ""
 
 
-def on_message(x, message):
-    print('+' * 102)
-    print('first args:', x)
-    print('message:', message)
-    print('+' * 102)
+kline_store = []
+
+
+def on_message(self, message):
+    message = json.loads(message)
+    e = message.get('e', '')
+    if e == 'kline':
+        dat = message['k']
+        dat['E'] = message['E']
+        kline_store.append(dat)
+
 
 if __name__ == "__main__":
 
@@ -38,19 +46,24 @@ if __name__ == "__main__":
     with open(private_key, 'rb') as f:
         private_key = f.read()
 
-    # client = CoinM(
-    #     api_key=api_key,
-    #     private_key=private_key,
-    #     private_key_pass=private_key_pass,
-    #     # base_url="https://dapi.binance.com"
-    # )
-    
-    # create wedsocket stream client
-    wscli = CoinMWSSStreamClient(on_message=on_message)
-    wscli.kline(symbol, '5m')
-    wscli.ticker(symbol)
-
-    time.sleep(300)
+    client = CoinM(
+        api_key=api_key,
+        private_key=private_key,
+        private_key_pass=private_key_pass,
+        # base_url="https://dapi.binance.com"
+    )
+    for i in range(10):
+        line = client.klines(symbol, '5m', limit=1)
+        print(i, client.time(), line)
+        time.sleep(5)
+    #print(client.time())
+    #
+    ## create wedsocket stream client
+    #wscli = CoinMWSSStreamClient(on_message=on_message)
+    #wscli.kline(symbol, '5m')
+    #wscli.agg_trade(symbol)
+    #time.sleep(30)
+    #print(pd.DataFrame(kline_store)[['E', 't', 'T', 'o', 'h', 'l', 'c']])
 
 
 

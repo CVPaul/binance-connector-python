@@ -21,4 +21,7 @@ docs/build/
 
 examples/*.ini
 
+# user define
+*.log
 data
+strategy

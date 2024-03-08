@@ -112,6 +112,9 @@ class BinanceWebsocketClient:
         self.socket_manager.close()
         self.socket_manager.join()
 
+    def forever(self):
+        self.socket_manager.join()
+
     def list_subscribe(self, id=None):
         """sending the list subscription message, e.g.
 
