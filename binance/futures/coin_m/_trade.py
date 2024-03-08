@@ -1,6 +1,9 @@
 from binance.lib.utils import check_required_parameter
 from binance.lib.utils import check_required_parameters
 
+from binance.constant import _COIN_M_VER_
+from binance.constant import _COIN_M_API_
+
 
 def new_order_test(self, symbol: str, side: str, type: str, **kwargs):
     """Test New Order (TRADE)
@@ -8,9 +11,9 @@ def new_order_test(self, symbol: str, side: str, type: str, **kwargs):
     Test new order creation and signature/recvWindow. Creates and validates a new order but does not send it into
     the matching engine.
 
-    POST /api/v3/order/test
+    POST /{_COIN_M_API_}/{_COIN_M_VER_}/order/test
 
-    https://binance-docs.github.io/apidocs/spot/en/#test-new-order-trade
+    https://binance-docs.github.io/apidocs/delivery/en/#test-new-order-trade
 
     Args:
         symbol (str)
@@ -30,7 +33,7 @@ def new_order_test(self, symbol: str, side: str, type: str, **kwargs):
     """
     check_required_parameters([[symbol, "symbol"], [side, "side"], [type, "type"]])
     params = {"symbol": symbol, "side": side, "type": type, **kwargs}
-    url_path = "/api/v3/order/test"
+    url_path = f"/{_COIN_M_API_}/{_COIN_M_VER_}/order/test"
     return self.sign_request("POST", url_path, params)
 
 
@@ -39,9 +42,9 @@ def new_order(self, symbol: str, side: str, type: str, **kwargs):
 
     Post a new order
 
-    POST /api/v3/order
+    POST /{_COIN_M_API_}/{_COIN_M_VER_}/order
 
-    https://binance-docs.github.io/apidocs/spot/en/#new-order-trade
+    https://binance-docs.github.io/apidocs/delivery/en/#new-order-trade
 
     Args:
         symbol (str)
@@ -64,7 +67,7 @@ def new_order(self, symbol: str, side: str, type: str, **kwargs):
 
     check_required_parameters([[symbol, "symbol"], [side, "side"], [type, "type"]])
     params = {"symbol": symbol, "side": side, "type": type, **kwargs}
-    url_path = "/api/v3/order"
+    url_path = f"/{_COIN_M_API_}/{_COIN_M_VER_}/order"
     return self.sign_request("POST", url_path, params)
 
 
@@ -73,9 +76,9 @@ def cancel_order(self, symbol: str, **kwargs):
 
     Cancel an active order.
 
-    DELETE /api/v3/order
+    DELETE /{_COIN_M_API_}/{_COIN_M_VER_}/order
 
-    https://binance-docs.github.io/apidocs/spot/en/#cancel-order-trade
+    https://binance-docs.github.io/apidocs/delivery/en/#cancel-order-trade
 
     Args:
         symbol (str)
@@ -87,7 +90,7 @@ def cancel_order(self, symbol: str, **kwargs):
     """
     check_required_parameter(symbol, "symbol")
 
-    url_path = "/api/v3/order"
+    url_path = f"/{_COIN_M_API_}/{_COIN_M_VER_}/order"
     payload = {"symbol": symbol, **kwargs}
     return self.sign_request("DELETE", url_path, payload)
 
@@ -98,9 +101,9 @@ def cancel_open_orders(self, symbol: str, **kwargs):
     Cancels all active orders on a symbol.
     This includes OCO orders.
 
-    DELETE api/v3/openOrders
+    DELETE api/{_COIN_M_VER_}/openOrders
 
-    https://binance-docs.github.io/apidocs/spot/en/#cancel-all-open-orders-on-a-symbol-trade
+    https://binance-docs.github.io/apidocs/delivery/en/#cancel-all-open-orders-on-a-symbol-trade
 
     Args:
         symbol (str)
@@ -109,7 +112,7 @@ def cancel_open_orders(self, symbol: str, **kwargs):
     """
     check_required_parameter(symbol, "symbol")
 
-    url_path = "/api/v3/openOrders"
+    url_path = f"/{_COIN_M_API_}/{_COIN_M_VER_}/openOrders"
     payload = {"symbol": symbol, **kwargs}
     return self.sign_request("DELETE", url_path, payload)
 
@@ -119,9 +122,9 @@ def get_order(self, symbol, **kwargs):
 
     Check an order's status.
 
-    GET /api/v3/order
+    GET /{_COIN_M_API_}/{_COIN_M_VER_}/order
 
-    https://binance-docs.github.io/apidocs/spot/en/#query-order-user_data
+    https://binance-docs.github.io/apidocs/delivery/en/#query-order-user_data
 
     Args:
         symbol (str)
@@ -132,7 +135,7 @@ def get_order(self, symbol, **kwargs):
     """
     check_required_parameter(symbol, "symbol")
 
-    url_path = "/api/v3/order"
+    url_path = f"/{_COIN_M_API_}/{_COIN_M_VER_}/order"
     payload = {"symbol": symbol, **kwargs}
     return self.sign_request("GET", url_path, payload)
 
@@ -150,9 +153,9 @@ def cancel_and_replace(
 
     Weight(IP): 1
 
-    POST /api/v3/order/cancelReplace
+    POST /{_COIN_M_API_}/{_COIN_M_VER_}/order/cancelReplace
 
-    https://binance-docs.github.io/apidocs/spot/en/#cancel-an-existing-order-and-send-a-new-order-user_data
+    https://binance-docs.github.io/apidocs/delivery/en/#cancel-an-existing-order-and-send-a-new-order-user_data
 
     Args:
         symbol (str)
@@ -192,7 +195,7 @@ def cancel_and_replace(
         "cancelReplaceMode": cancelReplaceMode,
         **kwargs,
     }
-    url_path = "/api/v3/order/cancelReplace"
+    url_path = f"/{_COIN_M_API_}/{_COIN_M_VER_}/order/cancelReplace"
     return self.sign_request("POST", url_path, params)
 
 
@@ -201,9 +204,9 @@ def get_open_orders(self, symbol=None, **kwargs):
 
     Get all open orders on a symbol.
 
-    GET /api/v3/openOrders
+    GET /{_COIN_M_API_}/{_COIN_M_VER_}/openOrders
 
-    https://binance-docs.github.io/apidocs/spot/en/#current-open-orders-user_data
+    https://binance-docs.github.io/apidocs/delivery/en/#current-open-orders-user_data
 
     Args:
         symbol (str, optional)
@@ -211,7 +214,7 @@ def get_open_orders(self, symbol=None, **kwargs):
         recvWindow (int, optional): The value cannot be greater than 60000
     """
 
-    url_path = "/api/v3/openOrders"
+    url_path = f"/{_COIN_M_API_}/{_COIN_M_VER_}/openOrders"
     payload = {"symbol": symbol, **kwargs}
     return self.sign_request("GET", url_path, payload)
 
@@ -221,9 +224,9 @@ def get_orders(self, symbol: str, **kwargs):
 
     Get all account orders; active, canceled, or filled.
 
-    GET /api/v3/allOrders
+    GET /{_COIN_M_API_}/{_COIN_M_VER_}/allOrders
 
-    https://binance-docs.github.io/apidocs/spot/en/#all-orders-user_data
+    https://binance-docs.github.io/apidocs/delivery/en/#all-orders-user_data
 
     Args:
         symbol (str)
@@ -236,7 +239,7 @@ def get_orders(self, symbol: str, **kwargs):
     """
     check_required_parameter(symbol, "symbol")
 
-    url_path = "/api/v3/allOrders"
+    url_path = f"/{_COIN_M_API_}/{_COIN_M_VER_}/allOrders"
     payload = {"symbol": symbol, **kwargs}
     return self.sign_request("GET", url_path, payload)
 
@@ -254,9 +257,9 @@ def new_oco_order(
 
     Post a new oco order
 
-    POST /api/v3/order/oco
+    POST /{_COIN_M_API_}/{_COIN_M_VER_}/order/oco
 
-    https://binance-docs.github.io/apidocs/spot/en/#new-oco-trade
+    https://binance-docs.github.io/apidocs/delivery/en/#new-oco-trade
 
     Args:
         symbol (str)
@@ -298,7 +301,7 @@ def new_oco_order(
         **kwargs,
     }
 
-    url_path = "/api/v3/order/oco"
+    url_path = f"/{_COIN_M_API_}/{_COIN_M_VER_}/order/oco"
     return self.sign_request("POST", url_path, params)
 
 
@@ -307,9 +310,9 @@ def cancel_oco_order(self, symbol, **kwargs):
 
     Cancel an entire Order List
 
-    DELETE /api/v3/orderList
+    DELETE /{_COIN_M_API_}/{_COIN_M_VER_}/orderList
 
-    https://binance-docs.github.io/apidocs/spot/en/#cancel-oco-trade
+    https://binance-docs.github.io/apidocs/delivery/en/#cancel-oco-trade
 
     Args:
         symbol (str)
@@ -321,7 +324,7 @@ def cancel_oco_order(self, symbol, **kwargs):
     """
     check_required_parameter(symbol, "symbol")
 
-    url_path = "/api/v3/orderList"
+    url_path = f"/{_COIN_M_API_}/{_COIN_M_VER_}/orderList"
     payload = {"symbol": symbol, **kwargs}
     return self.sign_request("DELETE", url_path, payload)
 
@@ -331,16 +334,16 @@ def get_oco_order(self, **kwargs):
 
     Retrieves a specific OCO based on provided optional parameters
 
-    GET /api/v3/orderList
+    GET /{_COIN_M_API_}/{_COIN_M_VER_}/orderList
 
-    https://binance-docs.github.io/apidocs/spot/en/#query-oco-user_data
+    https://binance-docs.github.io/apidocs/delivery/en/#query-oco-user_data
 
     Keyword Args:
         orderListId (int, optional): Either orderListId or listClientOrderId must be provided
         origClientOrderId (str, optional): Either orderListId or listClientOrderId must be provided.
         recvWindow (int, optional): The value cannot be greater than 60000
     """
-    url_path = "/api/v3/orderList"
+    url_path = f"/{_COIN_M_API_}/{_COIN_M_VER_}/orderList"
     return self.sign_request("GET", url_path, {**kwargs})
 
 
@@ -349,9 +352,9 @@ def get_oco_orders(self, **kwargs):
 
     Retrieves all OCO based on provided optional parameters
 
-    GET /api/v3/allOrderList
+    GET /{_COIN_M_API_}/{_COIN_M_VER_}/allOrderList
 
-    https://binance-docs.github.io/apidocs/spot/en/#query-all-oco-user_data
+    https://binance-docs.github.io/apidocs/delivery/en/#query-all-oco-user_data
 
     Keyword Args:
         fromId (int, optional): If supplied, neither startTime or endTime can be provided
@@ -361,22 +364,22 @@ def get_oco_orders(self, **kwargs):
         recvWindow (int, optional): The value cannot be greater than 60000
     """
 
-    url_path = "/api/v3/allOrderList"
+    url_path = f"/{_COIN_M_API_}/{_COIN_M_VER_}/allOrderList"
     return self.sign_request("GET", url_path, {**kwargs})
 
 
 def get_oco_open_orders(self, **kwargs):
     """Query Open OCO (USER_DATA)
 
-    GET /api/v3/openOrderList
+    GET /{_COIN_M_API_}/{_COIN_M_VER_}/openOrderList
 
-    https://binance-docs.github.io/apidocs/spot/en/#query-open-oco-user_data
+    https://binance-docs.github.io/apidocs/delivery/en/#query-open-oco-user_data
 
     Keyword Args:
         recvWindow (int, optional): The value cannot be greater than 60000
     """
 
-    url_path = "/api/v3/openOrderList"
+    url_path = f"/{_COIN_M_API_}/{_COIN_M_VER_}/openOrderList"
     return self.sign_request("GET", url_path, {**kwargs})
 
 
@@ -385,15 +388,15 @@ def account(self, **kwargs):
 
     Get current account information
 
-    GET /api/v3/account
+    GET /{_COIN_M_API_}/{_COIN_M_VER_}/account
 
-    https://binance-docs.github.io/apidocs/spot/en/#account-information-user_data
+    https://binance-docs.github.io/apidocs/delivery/en/#account-information-user_data
 
     Keyword Args:
         recvWindow (int, optional): The value cannot be greater than 60000
     """
 
-    url_path = "/api/v3/account"
+    url_path = f"/{_COIN_M_API_}/{_COIN_M_VER_}/account"
     return self.sign_request("GET", url_path, {**kwargs})
 
 
@@ -402,9 +405,9 @@ def my_trades(self, symbol: str, **kwargs):
 
     Get trades for a specific account and symbol.
 
-    GET /api/v3/myTrades
+    GET /{_COIN_M_API_}/{_COIN_M_VER_}/myTrades
 
-    https://binance-docs.github.io/apidocs/spot/en/#account-trade-list-user_data
+    https://binance-docs.github.io/apidocs/delivery/en/#account-trade-list-user_data
 
     Args:
         symbol (str)
@@ -419,7 +422,7 @@ def my_trades(self, symbol: str, **kwargs):
 
     check_required_parameter(symbol, "symbol")
 
-    url_path = "/api/v3/myTrades"
+    url_path = f"/{_COIN_M_API_}/{_COIN_M_VER_}/myTrades"
     payload = {"symbol": symbol, **kwargs}
     return self.sign_request("GET", url_path, payload)
 
@@ -429,15 +432,15 @@ def get_order_rate_limit(self, **kwargs):
 
     Displays the user's current order count usage for all intervals.
 
-    GET /api/v3/rateLimit/order
+    GET /{_COIN_M_API_}/{_COIN_M_VER_}/rateLimit/order
 
-    https://binance-docs.github.io/apidocs/spot/en/#query-current-order-count-usage-trade
+    https://binance-docs.github.io/apidocs/delivery/en/#query-current-order-count-usage-trade
 
     Keyword Args:
         recvWindow (int, optional): The value cannot be greater than 60000
     """
 
-    url_path = "/api/v3/rateLimit/order"
+    url_path = f"/{_COIN_M_API_}/{_COIN_M_VER_}/rateLimit/order"
     return self.sign_request("GET", url_path, {**kwargs})
 
 
@@ -462,9 +465,9 @@ def query_prevented_matches(self, symbol: str, **kwargs):
     Querying by preventedMatchId: 	2
     Querying by orderId: 	          20
 
-    GET /api/v3/myPreventedMatches
+    GET /{_COIN_M_API_}/{_COIN_M_VER_}/myPreventedMatches
 
-    https://binance-docs.github.io/apidocs/spot/en/#query-prevented-matches-user_data
+    https://binance-docs.github.io/apidocs/delivery/en/#query-prevented-matches-user_data
 
     Args:
         symbol (str)
@@ -478,5 +481,5 @@ def query_prevented_matches(self, symbol: str, **kwargs):
     check_required_parameter(symbol, "symbol")
 
     params = {"symbol": symbol, **kwargs}
-    url_path = "/api/v3/myPreventedMatches"
+    url_path = f"/{_COIN_M_API_}/{_COIN_M_VER_}/myPreventedMatches"
     return self.sign_request("GET", url_path, params)
