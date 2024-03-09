@@ -39,7 +39,7 @@ class CoinM(API):
     from binance.futures.coin_m._trade import get_oco_orders
     from binance.futures.coin_m._trade import get_oco_open_orders
     from binance.futures.coin_m._trade import account
-    from binance.futures.coin_m._trade import my_trades
+    from binance.futures.coin_m._trade import user_trades
     from binance.futures.coin_m._trade import get_order_rate_limit
     from binance.futures.coin_m._trade import query_prevented_matches
 

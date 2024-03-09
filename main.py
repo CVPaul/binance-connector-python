@@ -25,6 +25,8 @@ api_key = "../api_key.txt"
 private_key = "../private_key.pem"
 private_key_pass = ""
 
+wss_test_url = "wss://dstream.binancefuture.com"
+api_test_url = "https://testnet.binancefuture.com"
 
 kline_store = []
 
@@ -50,12 +52,15 @@ if __name__ == "__main__":
         api_key=api_key,
         private_key=private_key,
         private_key_pass=private_key_pass,
+        base_url=api_test_url,
         # base_url="https://dapi.binance.com"
     )
-    for i in range(10):
-        line = client.klines(symbol, '5m', limit=1)
-        print(i, client.time(), line)
-        time.sleep(5)
+    print(client.account())
+    # print(client.user_trades(symbol))
+    #for i in range(10):
+    #    line = client.klines(symbol, '5m', limit=1)
+    #    print(i, client.time(), line)
+    #    time.sleep(5)
     #print(client.time())
     #
     ## create wedsocket stream client

@@ -400,7 +400,7 @@ def account(self, **kwargs):
     return self.sign_request("GET", url_path, {**kwargs})
 
 
-def my_trades(self, symbol: str, **kwargs):
+def user_trades(self, symbol: str, **kwargs):
     """Account Trade List (USER_DATA)
 
     Get trades for a specific account and symbol.
@@ -422,7 +422,7 @@ def my_trades(self, symbol: str, **kwargs):
 
     check_required_parameter(symbol, "symbol")
 
-    url_path = f"/{_COIN_M_API_}/{_COIN_M_VER_}/myTrades"
+    url_path = f"/{_COIN_M_API_}/{_COIN_M_VER_}/userTrades"
     payload = {"symbol": symbol, **kwargs}
     return self.sign_request("GET", url_path, payload)
 
