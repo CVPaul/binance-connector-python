@@ -23,5 +23,7 @@ examples/*.ini
 
 # user define
 *.log
+*.ckpt
+*.json
 data
 strategy

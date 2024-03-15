@@ -28,11 +28,13 @@ class CoinM(API):
     from binance.futures.coin_m._trade import new_order_test
     from binance.futures.coin_m._trade import new_order
     from binance.futures.coin_m._trade import cancel_order
+    from binance.futures.coin_m._trade import modify_order
     from binance.futures.coin_m._trade import cancel_open_orders
     from binance.futures.coin_m._trade import get_order
     from binance.futures.coin_m._trade import cancel_and_replace
     from binance.futures.coin_m._trade import get_open_orders
     from binance.futures.coin_m._trade import get_orders
+    from binance.futures.coin_m._trade import commission_rate
     from binance.futures.coin_m._trade import new_oco_order
     from binance.futures.coin_m._trade import cancel_oco_order
     from binance.futures.coin_m._trade import get_oco_order

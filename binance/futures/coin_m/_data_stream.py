@@ -1,47 +1,50 @@
 from binance.lib.utils import check_required_parameter, check_required_parameters
 
+from binance.constant import _COIN_M_API_
+from binance.constant import _COIN_M_VER_
+
 
 def new_listen_key(self):
     """Create a ListenKey (USER_STREAM)
 
-    POST /api/v3/userDataStream
+    POST /{_COIN_M_API_}/{_COIN_M_VER_}/listenKey
 
-    https://binance-docs.github.io/apidocs/spot/en/#listen-key-spot
+    https://binance-docs.github.io/apidocs/delivery/en/#listen-key-delivery
     """
 
-    url_path = "/api/v3/userDataStream"
+    url_path = f"/{_COIN_M_API_}/{_COIN_M_VER_}/listenKey"
     return self.send_request("POST", url_path)
 
 
 def renew_listen_key(self, listenKey: str):
     """Ping/Keep-alive a ListenKey (USER_STREAM)
 
-    PUT /api/v3/userDataStream
+    PUT /{_COIN_M_API_}/{_COIN_M_VER_}/listenKey
 
-    https://binance-docs.github.io/apidocs/spot/en/#listen-key-spot
+    https://binance-docs.github.io/apidocs/delivery/en/#listen-key-delivery
 
     Args:
         listenKey (str)
     """
     check_required_parameter(listenKey, "listenKey")
 
-    url_path = "/api/v3/userDataStream"
+    url_path = f"/{_COIN_M_API_}/{_COIN_M_VER_}/listenKey"
     return self.send_request("PUT", url_path, {"listenKey": listenKey})
 
 
 def close_listen_key(self, listenKey: str):
     """Close a ListenKey (USER_STREAM)
 
-    DELETE /api/v3/userDataStream
+    DELETE /{_COIN_M_API_}/{_COIN_M_VER_}/listenKey
 
-    https://binance-docs.github.io/apidocs/spot/en/#listen-key-spot
+    https://binance-docs.github.io/apidocs/delivery/en/#listen-key-delivery
 
     Args:
         listenKey (str)
     """
     check_required_parameter(listenKey, "listenKey")
 
-    url_path = "/api/v3/userDataStream"
+    url_path = f"/{_COIN_M_API_}/{_COIN_M_VER_}/listenKey"
     return self.send_request("DELETE", url_path, {"listenKey": listenKey})
 
 
@@ -51,7 +54,7 @@ def new_margin_listen_key(self):
 
     POST /sapi/v1/userDataStream
 
-    https://binance-docs.github.io/apidocs/spot/en/#listen-key-margin
+    https://binance-docs.github.io/apidocs/delivery/en/#listen-key-margin
     """
 
     url_path = "/sapi/v1/userDataStream"
@@ -63,7 +66,7 @@ def renew_margin_listen_key(self, listenKey: str):
 
     PUT /sapi/v1/userDataStream
 
-    https://binance-docs.github.io/apidocs/spot/en/#listen-key-margin
+    https://binance-docs.github.io/apidocs/delivery/en/#listen-key-margin
 
     Args:
         listenKey (str)
@@ -79,7 +82,7 @@ def close_margin_listen_key(self, listenKey: str):
 
     DELETE /sapi/v1/userDataStream
 
-    https://binance-docs.github.io/apidocs/spot/en/#listen-key-margin
+    https://binance-docs.github.io/apidocs/delivery/en/#listen-key-margin
 
     Args:
         listenKey (str)
@@ -96,7 +99,7 @@ def new_isolated_margin_listen_key(self, symbol: str):
 
     POST /sapi/v1/userDataStream/isolated
 
-    https://binance-docs.github.io/apidocs/spot/en/#listen-key-margin
+    https://binance-docs.github.io/apidocs/delivery/en/#listen-key-margin
 
     Args:
         symbol (str)
@@ -112,7 +115,7 @@ def renew_isolated_margin_listen_key(self, listenKey: str, symbol: str):
 
     PUT /sapi/v1/userDataStream/isolated
 
-    https://binance-docs.github.io/apidocs/spot/en/#listen-key-margin
+    https://binance-docs.github.io/apidocs/delivery/en/#listen-key-margin
 
     Args:
         listenKey (str)
@@ -132,7 +135,7 @@ def close_isolated_margin_listen_key(self, listenKey: str, symbol: str):
 
     DELETE /sapi/v1/userDataStream/isolated
 
-    https://binance-docs.github.io/apidocs/spot/en/#listen-key-margin
+    https://binance-docs.github.io/apidocs/delivery/en/#listen-key-margin
 
     Args:
         listenKey (str)

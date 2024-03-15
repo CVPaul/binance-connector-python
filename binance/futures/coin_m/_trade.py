@@ -38,6 +38,7 @@ def new_order_test(self, symbol: str, side: str, type: str, **kwargs):
 
 
 def new_order(self, symbol: str, side: str, type: str, **kwargs):
+    # return {'orderId': 10000, 'clientOrderId': 'LOGICAL_TEST_NO_ACTION'}
     """New Order (TRADE)
 
     Post a new order
@@ -93,6 +94,30 @@ def cancel_order(self, symbol: str, **kwargs):
     url_path = f"/{_COIN_M_API_}/{_COIN_M_VER_}/order"
     payload = {"symbol": symbol, **kwargs}
     return self.sign_request("DELETE", url_path, payload)
+
+
+def modify_order(self, symbol: str, **kwargs):
+    # return {"orderId": kwargs['orderId'] + 1, 'clientOrderId': 'mod_LOGICAL_TEST_NO_ACTION'}
+    """Modify Order (TRADE)
+
+    Modify a LIMIT order.
+
+    PUT /{_COIN_M_API_}/{_COIN_M_VER_}/order
+
+    https://binance-docs.github.io/apidocs/delivery/en/#trade-4
+
+    Args:
+        symbol (str)
+    Keyword Args:
+        orderId (int, optional)
+        origClientOrderId (str, optional)
+        recvWindow (int, optional): The value cannot be greater than 60000
+    """
+    check_required_parameter(symbol, "symbol")
+
+    url_path = f"/{_COIN_M_API_}/{_COIN_M_VER_}/order"
+    payload = {"symbol": symbol, **kwargs}
+    return self.sign_request("PUT", url_path, payload)
 
 
 def cancel_open_orders(self, symbol: str, **kwargs):
@@ -240,6 +265,27 @@ def get_orders(self, symbol: str, **kwargs):
     check_required_parameter(symbol, "symbol")
 
     url_path = f"/{_COIN_M_API_}/{_COIN_M_VER_}/allOrders"
+    payload = {"symbol": symbol, **kwargs}
+    return self.sign_request("GET", url_path, payload)
+
+
+def commission_rate(self, symbol: str, **kwargs):
+    """Commition Rate (USER_DATA)
+
+    Get user Commition Rate
+
+    GET /{_COIN_M_API_}/{_COIN_M_VER_}/commisionRate
+
+    https://binance-docs.github.io/apidocs/delivery/en/#user_data-14
+
+    Args:
+        symbol (str)
+    Keyword Args:
+        recvWindow (int, optional): The value cannot be greater than 60000
+    """
+    check_required_parameter(symbol, "symbol")
+
+    url_path = f"/{_COIN_M_API_}/{_COIN_M_VER_}/commissionRate"
     payload = {"symbol": symbol, **kwargs}
     return self.sign_request("GET", url_path, payload)
 

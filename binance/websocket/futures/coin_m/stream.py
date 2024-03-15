@@ -163,3 +163,7 @@ class CoinMWSSStreamClient(BinanceWebsocketClient):
         self.send_message_to_server(
             "{}@depth{}@{}ms".format(symbol.lower(), level, speed), id=id, action=action
         )
+
+    def user_data(self, listen_key: str, id=None, action=None, **kwargs):
+        """Listen to user data by using the provided listen_key"""
+        self.send_message_to_server(listen_key, action=action, id=id)
