@@ -49,6 +49,13 @@ if __name__ == "__main__":
         # base_url=api_test_url,
         # base_url="https://dapi.binance.com"
     )
+    # price = 0.16552
+    # rsp = client.new_order(
+    #     symbol, side='SELL', type='LIMIT', positionSide='LONG',
+    #     quantity=1, price=price, timeInForce='GTC',
+    # )
+    # print(rsp)
+    print(client.time())
     # acc = client.exchange_info(symbol)
     # with open(f'{symbol}.json', 'w') as fp:
     #     json.dump(acc, fp, indent=4)
@@ -62,10 +69,10 @@ if __name__ == "__main__":
     #rsp = client.new_listen_key()
     #print(rsp)
     # create wedsocket stream client
-    wscli = CoinMWSSStreamClient(
-        # stream_url=wss_test_url,
-        on_message=on_message)
-    wscli.book_ticker(symbol)
+    # wscli = CoinMWSSStreamClient(
+    #     # stream_url=wss_test_url,
+    #     on_message=on_message)
+    # wscli.book_ticker(symbol)
     ## wscli.kline(symbol, '1m')
     #wscli.user_data(rsp['listenKey'])
     # wscli.agg_trade(symbol)

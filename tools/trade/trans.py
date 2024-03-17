@@ -16,7 +16,9 @@ from strategy.common.utils import get_auth_keys
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--symbol', type=str)
-    parser.add_argument('--limit', type=int, default=10)
+    parser.add_argument('--limit', type=int, default=0)
+    parser.add_argument('--start-time', type=str)
+    parser.add_argument('--end-time', type=str)
     parser.add_argument(
         '--stgname', type=str,
         help='only recall the orders whose ClientOrderId start with given stgname!')
@@ -37,9 +39,22 @@ if __name__ == "__main__":
     print(rsp)
     orders = cli.get_orders(
         symbol=args.symbol, limit=100)
-    for i in range(args.limit // 100):
+    if args.end_time:
+        args.end_time = pd.to_datetime(args.end_time).timestamp() * 1000
+    else:
+        args.end_time = orders[0]['time']
+    if args.start_time:
+        args.start_time = pd.to_datetime(args.start_time).timestamp() * 1000
+    else:
+        assert args.limit, "you should specify at least one of --limit/--start-time"
+    while args.end_time >= args.start_time:
+        if args.limit > 0 and len(orders) >= args.limit:
+            break 
         order_t = cli.get_orders(
-            symbol=args.symbol, limit=100, endTime=orders[0]['time'])
+            symbol=args.symbol, limit=100, endTime=args.end_time)
+        if len(order_t) == 1: # not more orders any more
+            break
+        args.end_time = order_t[0]['time']
         orders = order_t[:-1] + orders
     # stat
     trans, long_open, short_open = [], [], []
@@ -74,20 +89,19 @@ if __name__ == "__main__":
     trans = pd.DataFrame(
         trans, columns=[
             'side', 'pos', 'open_time', 'open', 'close_time', 'close']).astype(float)
-    trans.open_time = pd.to_datetime(trans.open_time * 1e6)
-    trans.close_time = pd.to_datetime(trans.close_time * 1e6)
-    temp = trans[['side', 'pos', 'open', 'close']]
-    temp['step'] = (temp.close - temp.open) * temp.side
-    temp['percent'] = temp.close / temp.open - 1.0
-    print(temp)
-    gross = trans.side * trans.pos * (trans.close - trans.open)
-    comms = trans.pos * (trans.close + trans.open) * commission_rate 
+    trans.open_time = pd.to_datetime(trans.open_time * 1e6).dt.strftime('%Y%m%d %H:%M:%S')
+    trans.close_time = pd.to_datetime(trans.close_time * 1e6).dt.strftime('%Y%m%d %H:%M:%S')
+    trans['step'] = (trans.close - trans.open) * trans.side
+    trans['percent'] = trans.close / trans.open - 1.0
+    trans['gross'] = trans.side * trans.pos * (trans.close - trans.open)
+    trans['comms'] = trans.pos * (trans.close + trans.open) * commission_rate
+    print(trans)
     print('=' * cut_line_len)
     print(f'statistic result of {args.symbol}：')
     print(f'    - time range:{trans.open_time[0]} '
           f'~ {trans.close_time.iloc[-1]}')
-    print(f'    - gross profit: {gross.sum():.5f}')
-    print(f'    - gross profit per trade: {gross.mean():.5f}')
-    print(f'    - commission: {comms.sum():.5f}')
-    print(f'    - commission per trade: {comms.mean():.5f}')
+    print(f'    - gross profit: {trans.gross.sum():.5f}')
+    print(f'    - gross profit per trade: {trans.gross.mean():.5f}')
+    print(f'    - commission: {trans.comms.sum():.5f}')
+    print(f'    - commission per trade: {trans.comms.mean():.5f}')
     print('=' * cut_line_len)

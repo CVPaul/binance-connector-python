@@ -26,4 +26,5 @@ examples/*.ini
 *.ckpt
 *.json
 data
+*.tar.gz
 strategy
