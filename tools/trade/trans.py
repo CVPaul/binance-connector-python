@@ -59,6 +59,7 @@ if __name__ == "__main__":
     # stat
     trans, long_open, short_open = [], [], []
     order_ids, start_t, end_t = set(), 0, 0
+    fields =  ["avgPrice", "executedQty", "side", "positionSide", "time"]
     for o in orders:
         if o['orderId'] in order_ids: # check if duplicated
             continue
@@ -79,6 +80,11 @@ if __name__ == "__main__":
                     trans.append([
                         1, o['executedQty'], ord['time'], ord['avgPrice'],
                         o['time'], o['avgPrice']])
+                else:
+                    print('can not match long close order:')
+                    df = pd.DataFrame([o])[fields]
+                    df.time = pd.to_datetime(df.time*1e6).dt.strftime("%Y%m%d %H:%M:%S")
+                    print(df)
             else:
                 if short_open:
                     ord = short_open.pop()
@@ -86,22 +92,40 @@ if __name__ == "__main__":
                     trans.append([
                         -1, o['executedQty'], ord['time'], ord['avgPrice'],
                         o['time'], o['avgPrice']])
-    trans = pd.DataFrame(
-        trans, columns=[
-            'side', 'pos', 'open_time', 'open', 'close_time', 'close']).astype(float)
-    trans.open_time = pd.to_datetime(trans.open_time * 1e6).dt.strftime('%Y%m%d %H:%M:%S')
-    trans.close_time = pd.to_datetime(trans.close_time * 1e6).dt.strftime('%Y%m%d %H:%M:%S')
-    trans['step'] = (trans.close - trans.open) * trans.side
-    trans['percent'] = trans.close / trans.open - 1.0
-    trans['gross'] = trans.side * trans.pos * (trans.close - trans.open)
-    trans['comms'] = trans.pos * (trans.close + trans.open) * commission_rate
-    print(trans)
-    print('=' * cut_line_len)
-    print(f'statistic result of {args.symbol}：')
-    print(f'    - time range:{trans.open_time[0]} '
-          f'~ {trans.close_time.iloc[-1]}')
-    print(f'    - gross profit: {trans.gross.sum():.5f}')
-    print(f'    - gross profit per trade: {trans.gross.mean():.5f}')
-    print(f'    - commission: {trans.comms.sum():.5f}')
-    print(f'    - commission per trade: {trans.comms.mean():.5f}')
-    print('=' * cut_line_len)
+                else:
+                    print('can not match short close order:')
+                    df = pd.DataFrame([o])[fields]
+                    df.time = pd.to_datetime(df.time*1e6).dt.strftime("%Y%m%d %H:%M:%S")
+                    print(df)
+    if trans:
+        trans = pd.DataFrame(
+            trans, columns=[
+                'side', 'pos', 'open_time', 'open', 'close_time', 'close']).astype(float)
+        trans.open_time = pd.to_datetime(trans.open_time * 1e6).dt.strftime('%Y%m%d %H:%M:%S')
+        trans.close_time = pd.to_datetime(trans.close_time * 1e6).dt.strftime('%Y%m%d %H:%M:%S')
+        trans['step'] = (trans.close - trans.open) * trans.side
+        trans['percent'] = trans.close / trans.open - 1.0
+        trans['gross'] = trans.side * trans.pos * (trans.close - trans.open)
+        trans['comms'] = trans.pos * (trans.close + trans.open) * commission_rate
+        print(trans)
+        print('=' * cut_line_len)
+        print(f'statistic result of {args.symbol}：')
+        print(f'    - time range:{trans.open_time[0]} '
+              f'~ {trans.close_time.iloc[-1]}')
+        print(f'    - gross profit: {trans.gross.sum():.5f}')
+        print(f'    - gross profit per trade: {trans.gross.mean():.5f}')
+        print(f'    - commission: {trans.comms.sum():.5f}')
+        print(f'    - commission per trade: {trans.comms.mean():.5f}')
+        print('=' * cut_line_len)
+    if long_open:
+        print(f'still open long orders:')
+        df = pd.DataFrame(long_open)[fields]
+        df.time = pd.to_datetime(df.time*1e6).dt.strftime("%Y%m%d %H:%M:%S")
+        print(df)
+        print('=' * cut_line_len)
+    if short_open:
+        print(f'still open short orders:')
+        df = pd.DataFrame(short_open)[fields]
+        df.time = pd.to_datetime(df.time*1e6).dt.strftime("%Y%m%d %H:%M:%S")
+        print(df)
+        print('=' * cut_line_len)

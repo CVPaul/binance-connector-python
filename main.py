@@ -21,8 +21,8 @@ stop_s = '2024-03-05'
 start_s = '2023-01-21'
 
 # ED25519 Keys
-api_key = "../api_key.txt"
-private_key = "../private_key.pem"
+api_key = "strategy/api_key.txt"
+private_key = "strategy/private_key.pem"
 private_key_pass = ""
 
 kline_store = []
