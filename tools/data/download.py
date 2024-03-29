@@ -5,58 +5,64 @@
 import os
 import sys
 import time
+import logging
+import argparse
 import pandas as pd
 
 from binance.futures import CoinM
+from binance.constant import N_MS_PER_SEC
+from binance.constant import N_MS_PER_DAY
+
 from datetime import datetime as dt
 from datetime import timedelta as td
 
-
-# global
-symbol =  sys.argv[1] # 'DOGEUSD_PERP'
-stop_s = '2024-03-05'
-start_s = '2023-01-21'
-
-# ED25519 Keys
-api_key = "../api_key.txt"
-private_key = "../private_key.pem"
-private_key_pass = ""
-day_ms_count = 24 * 3600 * 1000
-stop_t = int(pd.Timestamp(stop_s).timestamp() * 1000)
-start_t = int(pd.Timestamp(start_s).timestamp() * 1000)
+from strategy.common.utils import get_auth_keys
+from strategy.common.utils import on_open, on_close
 
 
-with open(api_key) as f:
-    api_key = f.read().strip()
+# logging
+logging.basicConfig(
+    filename='trend.log', level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s')
 
-with open(private_key, 'rb') as f:
-    private_key = f.read()
 
-client = CoinM(
-    api_key=api_key,
-    private_key=private_key,
-    private_key_pass=private_key_pass,
-    # base_url="https://dapi.binance.com"
-)
-
-# Get server timestamp
-# print(client.time())
-# Get klines of BTCUSDT at 1m interval
-os.makedirs(f'data/{symbol}/', exist_ok=True)
-while start_t < stop_t:
-    day = pd.to_datetime(start_t * 1e6)
-    start_t += day_ms_count
-    df = pd.DataFrame(
-        client.klines(symbol, "1m", endTime=start_t, limit=1441)[:-1],
-        columns=[
-            'start_t', 'open', 'high', 'low', 'close',
-            'volume', 'end_t', 'amount', 'trade_cnt',
-            'taker_vol', 'taker_amt', 'reserved'
-        ])
-    df.to_csv(f'data/{symbol}/{day.date()}.csv', index=False)
-    print(symbol, day)
-    time.sleep(1/40)
-#print(client.ext_klines("BTCUSD", "1m", 'continuous', contractType='PERPETUAL', limit=1))
-#print(client.ext_klines("BTCUSD", "1m", 'indexPrice', limit=1))
-## Get last 10 klines of BNBUSDT at 1h interval
-#print(client.klines("BNBUSD_PERP", "1h", limit=1))
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--symbol', '-s', type=str, required=True)
+    parser.add_argument('--start-time', type=str)
+    parser.add_argument('--end-time', type=str)
+    parser.add_argument(
+        '--type', type=str, required=True,
+        choice=['kline', 'tick'])
+    args = parser.parse_args()
+    # args convert
+    end_t = pd.to_datetime(args.end_time).Timestamp() * 1000
+    start_t = pd.to_datetime(args.start_time).Timestamp() * 1000
+    assert start_t <= end_t
+    # create client
+    api_key, private_key = get_auth_keys()
+    cli = CoinM(
+        api_key=api_key,
+        private_key=private_key,
+    )
+    # start pull data
+    data = []
+    os.makedirs(f'data/{args.symbol}/', exist_ok=True)
+    while start_t <= end_t:
+        if args.type == 'kline':
+            dat = cli.klines(
+                args.symbol, args.period,
+                startTime=start_t, limit=1441)
+            day = pd.to_datetime(start_t * 1e6)
+            assert dat[-1][0] == start_t + N_MS_PER_DAY
+            start_t = dat[-1][0]
+            dat = pd.DateFrame(dat[:-1], columns=[
+                'start_t', 'open', 'high', 'low', 'close',
+                'volume', 'end_t', 'amount', 'trade_cnt',
+                'taker_vol', 'taker_amt', 'reserved'
+            ])
+            dat.to_csv(f'data/{args.symbol}/{day.date()}.csv', index=False)
+            loging.info(
+                f'{dat.shape[0]} 1m klines of {args.symbol}@'
+                f'{day.date()}had been save to data dir!')
+            time.sleep(1/40)

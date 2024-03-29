@@ -16,3 +16,7 @@ ROUND_AT = {
     "BTCUSD_PERP": 1,
     "DOGEUSD_PERP": 5,
 }
+
+# Period
+N_MS_PER_SEC = 1000
+N_MS_PER_DAY = 24 * 3600000 

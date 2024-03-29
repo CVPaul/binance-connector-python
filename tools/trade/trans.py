@@ -16,6 +16,7 @@ from strategy.common.utils import get_auth_keys
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--symbol', type=str)
+    parser.add_argument('--raw', action='store_true')
     parser.add_argument('--limit', type=int, default=0)
     parser.add_argument('--start-time', type=str)
     parser.add_argument('--end-time', type=str)
@@ -23,6 +24,14 @@ if __name__ == "__main__":
         '--stgname', type=str,
         help='only recall the orders whose ClientOrderId start with given stgname!')
     args = parser.parse_args()
+    if not args.symbol:
+        if 'doge' in args.stgname.lower():
+            args.symbol = 'DOGEUSD_PERP'
+        elif 'btc' in args.stgname.lower():
+            args.symbol = 'BTCUSD_PERP'
+        else:
+            raise RuntimeError(
+                f'can not infer symbol from stgname, please specify with --symbol')
     if args.stgname:
         args.stgname += '_' # add the end mark '_' to it
     # create the API client first
@@ -33,10 +42,19 @@ if __name__ == "__main__":
     )
     cut_line_len = 96
     # get commisionRate
-    print("=" * cut_line_len)
     rsp = cli.commission_rate(args.symbol)
     commission_rate = float(rsp['takerCommissionRate'])
-    print(rsp)
+    print("=" * cut_line_len)
+    print(f"{args.symbol}'s basic info:")
+    for k, v in rsp.items():
+        if 'Rate' not in k:
+            continue
+        print(f"    - {k}:{v}")
+    for k, v in cli.ticker_price(args.symbol)[0].items():
+        if k not in ['price', 'time']:
+            continue
+        print(f"    - {k}:{v}")
+    print("=" * cut_line_len)
     orders = cli.get_orders(
         symbol=args.symbol, limit=100)
     if args.end_time:
@@ -66,7 +84,14 @@ if __name__ == "__main__":
         order_ids.add(o['orderId'])
         if args.stgname and not o['clientOrderId'].startswith(args.stgname):
             continue
-        if o['status'] != 'FILLED':
+        if o['status'] != 'FILLED' and not args.raw:
+            continue
+        #if args.start_time and o['time'] < args.start_time:
+        #    continue
+        #if args.end_time and o['time'] > args.end_time:
+        #    continue
+        if args.raw:
+            long_open.append(o)
             continue
         if o['side'] == 'BUY' and o['positionSide'] == 'LONG': # long open
             long_open.append(o)
