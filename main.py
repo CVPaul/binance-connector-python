@@ -11,21 +11,9 @@ import pandas as pd
 from binance.futures import CoinM
 from datetime import datetime as dt
 from datetime import timedelta as td
+from strategy.common.utils import get_auth_keys
 
 from binance.websocket.futures.coin_m.stream import CoinMWSSStreamClient
-
-
-# global
-symbol =  sys.argv[1] # 'DOGEUSD_PERP'
-stop_s = '2024-03-05'
-start_s = '2023-01-21'
-
-# ED25519 Keys
-api_key = "strategy/api_key.txt"
-private_key = "strategy/private_key.pem"
-private_key_pass = ""
-
-kline_store = []
 
 
 def on_message(self, message):
@@ -36,26 +24,18 @@ def on_message(self, message):
 
 if __name__ == "__main__":
 
-    with open(api_key) as f:
-        api_key = f.read().strip()
-
-    with open(private_key, 'rb') as f:
-        private_key = f.read()
+    api_key, private_key = get_auth_keys()
 
     client = CoinM(
         api_key=api_key,
         private_key=private_key,
-        private_key_pass=private_key_pass,
-        # base_url=api_test_url,
-        # base_url="https://dapi.binance.com"
     )
-    # price = 0.16552
-    # rsp = client.new_order(
-    #     symbol, side='SELL', type='LIMIT', positionSide='LONG',
-    #     quantity=1, price=price, timeInForce='GTC',
-    # )
-    # print(rsp)
     print(client.time())
+    rsp = client.new_order(
+        symbol='DOGEUSD_PERP', side='SELL', type='STOP',
+        price=0.1768, stopPrice=0.1861,
+        timeInForce='GTC', quantity=1, positionSide='LONG')
+    print(rsp)
     # acc = client.exchange_info(symbol)
     # with open(f'{symbol}.json', 'w') as fp:
     #     json.dump(acc, fp, indent=4)

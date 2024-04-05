@@ -16,8 +16,7 @@ from datetime import timedelta as td
 
 from binance.websocket.futures.coin_m.stream import CoinMWSSStreamClient
 
-from strategy.indicator.common import MA
-from strategy.indicator.common import ATR
+from strategy.indicator.common import MA, DNN, UPP, ATR
 
 from strategy.common.utils import get_auth_keys
 from strategy.common.utils import on_open, on_close
@@ -62,14 +61,15 @@ if __name__ == "__main__":
         ]).astype(float)
     ma = MA(args.length, df)
     atr = ATR(args.length, df)
-
-    s = ma.value
-    a = atr.value
+    upp = UPP(args.length, df)
+    dnn = DNN(args.length, df)
 
     cutline_len = 145
     print("=" * cutline_len)
     print(f"metric info: length={args.length}|freq={args.freq}")
-    print(f"    - MA: {s:.6f}")
-    print(f"    - ATR: {a:.6f}")
-    print(f"    - Ratio: {a * 100 / s :.2f}%")
+    print(f"    - MA: {ma.value:.6f}")
+    print(f"    - ATR: {atr.value:.6f}")
+    print(f"    - DNN: {dnn.value:.6f}")
+    print(f"    - UPP: {upp.value:.6f}")
+    print(f"    - Ratio: {atr.value * 100 / ma.value :.2f}%")
     print("=" * cutline_len)
