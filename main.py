@@ -6,6 +6,7 @@ import os
 import sys
 import time
 import json
+import logging
 import pandas as pd
 
 from binance.futures import CoinM
@@ -15,6 +16,8 @@ from strategy.common.utils import get_auth_keys
 
 from binance.websocket.futures.coin_m.stream import CoinMWSSStreamClient
 
+logging.basicConfig(
+    level=logging.INFO, format='%(asctime)s-%(message)s')
 
 def on_message(self, message):
     message = json.loads(message)
@@ -30,12 +33,21 @@ if __name__ == "__main__":
         api_key=api_key,
         private_key=private_key,
     )
-    print(client.time())
-    rsp = client.new_order(
-        symbol='DOGEUSD_PERP', side='SELL', type='STOP',
-        price=0.1768, stopPrice=0.1861,
-        timeInForce='GTC', quantity=1, positionSide='LONG')
-    print(rsp)
+    # logging.info(pd.to_datetime(client.time()['serverTime'] * 1e6))
+    #rsp = client.new_order(
+    #   symbol='DOGEUSD_PERP', side='SELL', type='STOP',
+    #   price=0.1768, stopPrice=0.1762, # timeInForce='GTC',
+    #   timeInForce='GTC', quantity=1, positionSide='LONG')
+    rsp = client.klines('DOGEUSD_PERP', '8h', limit=135)
+    df = pd.DataFrame(
+        rsp, columns=[
+            'start_t', 'open', 'high', 'low', 'close',
+            'volume', 'end_t', 'amount', 'trade_cnt',
+            'taker_vol', 'taker_amt', 'reserved'
+        ])
+    df.to_csv('8h.csv')
+
+    # print(rsp)
     # acc = client.exchange_info(symbol)
     # with open(f'{symbol}.json', 'w') as fp:
     #     json.dump(acc, fp, indent=4)

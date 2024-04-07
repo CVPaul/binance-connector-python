@@ -15,7 +15,7 @@ from strategy.common.utils import get_auth_keys
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--symbol', type=str)
+    parser.add_argument('--symbol', '-s', type=str)
     parser.add_argument('--raw', action='store_true')
     parser.add_argument('--limit', type=int, default=0)
     parser.add_argument('--start-time', type=str)

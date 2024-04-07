@@ -28,3 +28,5 @@ examples/*.ini
 data
 *.tar.gz
 strategy
+*.csv
+.conda
