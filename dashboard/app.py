@@ -139,9 +139,9 @@ def main():
             '手续费率：', options=[0.0002, 0.0005])
     with cols[1]:
         symbol = st.selectbox(
-            "币种：", options=[default, "ALL", "BTC", "BNB", "DOGE"])
+            "币种：", options=[default, "BTC", "BNB", "DOGE"])
     with cols[2]:
-        if symbol in {default, 'ALL'}:
+        if symbol in {default}:
             symbol = "*"
         else:
             symbol = symbol.lower()
@@ -153,10 +153,9 @@ def main():
         st.write("")
         if st.button("刷新"):
             st.rerun()
-    if symbol == 'all':
-        st.markdown("## 策略总览")
-        df = overview(ratio) 
-        st.table(df)
+    st.markdown("## 策略总览")
+    df = overview(ratio) 
+    st.table(df)
     if filename != default:
         table = log_parser(filename, ratio)
         summary = log_summary(table)
