@@ -8,8 +8,12 @@ import psutil
 import pandas as pd
 import streamlit as st
 
+from binance.futures import CoinM
+from strategy.common.utils import get_auth_keys
+
 
 st.set_page_config(page_title="Trader-XII", layout='wide')
+COIN_LIST = ['BTC', 'BNB', 'DOGE']
 BUTTON_STYLE = '''<style>
 div.stButton>button {
     background-color: #f63366;
@@ -23,6 +27,24 @@ div.stButton>button {
 }
 </style>'''
 
+
+def trade_info():
+    api_key, private_key = get_auth_keys()
+    client = CoinM(
+        api_key=api_key,
+        private_key=private_key)
+    result = []
+    for symbol in COIN_LIST:
+        symbol = f'{symbol}USD_PERP'
+        rsp = client.ticker_price(symbol)[0]
+        result.append([symbol, rsp['price']]) 
+    orders = client.get_open_orders()
+    orders = pd.DataFrame(orders)[[
+        'time', 'pair', 'side', 'price', 'status', 'clientOrderId', 'origQty']]
+    orders.time = pd.to_datetime((orders.time+ 8 * 3600000) * 1e6)
+    result = pd.DataFrame(result, columns=['symbol', 'price'])
+    return orders, result
+    
 
 def overview(ratio):
     res = []
@@ -133,14 +155,30 @@ def main():
     df = process_info()
     st.table(df)
     default = "请选择..."
-    cols = st.columns([3, 3, 3, 1])
-    with cols[0]:
+    # cols = st.columns([3, 3, 3, 1, 1])
+    # with cols[0]:
+    #     ratio = st.selectbox(
+    #         '手续费率：', options=[0.0002, 0.0005])
+    # with cols[1]:
+    #     symbol = st.selectbox(
+    #         "币种：", options=[default, "BTC", "BNB", "DOGE"])
+    # with cols[2]:
+    #     if symbol in {default}:
+    #         symbol = "*"
+    #     else:
+    #         symbol = symbol.lower()
+    #     filename = st.selectbox(
+    #         '日志文件：', options=[default] + sorted(
+    #             glob.glob(f"./{symbol}-*.log")))
+    # with cols[3]:
+    #     st.write("")
+    #     st.write("")
+    #     overview = st.button("查看总览")
+    with st.sidebar:
         ratio = st.selectbox(
             '手续费率：', options=[0.0002, 0.0005])
-    with cols[1]:
         symbol = st.selectbox(
             "币种：", options=[default, "BTC", "BNB", "DOGE"])
-    with cols[2]:
         if symbol in {default}:
             symbol = "*"
         else:
@@ -148,14 +186,21 @@ def main():
         filename = st.selectbox(
             '日志文件：', options=[default] + sorted(
                 glob.glob(f"./{symbol}-*.log")))
-    with cols[3]:
-        st.write("")
-        st.write("")
+        viewall = st.button("查看总览")
         if st.button("刷新"):
             st.rerun()
-    st.markdown("## 策略总览")
-    df = overview(ratio) 
-    st.table(df)
+    if viewall:
+        st.markdown("## 策略总览")
+        df = overview(ratio) 
+        st.table(df)
+    # trade info
+    open_orders, market_info = trade_info()
+    st.markdown("## 行情信息")
+    st.table(market_info)
+    if st.button("刷新", key='refresh2'):
+        st.rerun()
+    st.markdown("## 挂单信息")
+    st.table(open_orders)
     if filename != default:
         table = log_parser(filename, ratio)
         summary = log_summary(table)
