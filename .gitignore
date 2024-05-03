@@ -35,3 +35,4 @@ strategy
 *.pem
 *.key
 dashboard/cert
+backtest
