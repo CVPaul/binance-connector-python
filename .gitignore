@@ -32,3 +32,6 @@ strategy
 .conda
 *.swp
 *.hist
+*.pem
+*.key
+dashboard/cert

@@ -9,7 +9,7 @@ from binance.websocket.websocket_client import BinanceWebsocketClient
 
 class CoinMWSSStreamClient(BinanceWebsocketClient):
     def __init__(
-        self,
+        self, ctx=None,
         stream_url="wss://dstream.binance.com",
         on_message=None,
         on_open=None,
@@ -27,6 +27,7 @@ class CoinMWSSStreamClient(BinanceWebsocketClient):
         else:
             stream_url = stream_url + "/ws"
         super().__init__(
+            ctx,
             stream_url,
             on_message=on_message,
             on_open=on_open,

@@ -81,7 +81,7 @@ if __name__ == "__main__":
             dat.to_csv(f'{args.datadir}/{day.date()}.csv', index=False)
             logging.info(
                 f'{dat.shape[0]} 1m klines of {args.symbol}@'
-                f'{day.date()}had been save to data dir!')
+                f'{day.date()} had been save to data dir!')
             time.sleep(1/40)
         else:
             raise KeyError(f'unsupported type:{args.type}!')

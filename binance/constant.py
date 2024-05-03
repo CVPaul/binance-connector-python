@@ -13,8 +13,15 @@ _COIN_M_API_ = 'dapi'
 
 # precision: 1/10^{ROUND_AT}
 ROUND_AT = {
+    "BNBUSD_PERP": 2,
     "BTCUSD_PERP": 1,
     "DOGEUSD_PERP": 5,
+}
+
+MIN_MOVE = {
+    "BNBUSD_PERP": 0.01,
+    "BTCUSD_PERP": 0.1,
+    "DOGEUSD_PERP": 0.00001,
 }
 
 # Period

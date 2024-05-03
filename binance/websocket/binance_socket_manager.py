@@ -15,6 +15,7 @@ from binance.lib.utils import parse_proxies
 class BinanceSocketManager(threading.Thread):
     def __init__(
         self,
+        ctx,
         stream_url,
         on_message=None,
         on_open=None,
@@ -27,6 +28,7 @@ class BinanceSocketManager(threading.Thread):
         proxies: Optional[dict] = None,
     ):
         threading.Thread.__init__(self)
+        self.ctx = ctx
         if not logger:
             logger = logging.getLogger(__name__)
         self.logger = logger
@@ -97,7 +99,7 @@ class BinanceSocketManager(threading.Thread):
         if op_code == ABNF.OPCODE_PING:
             self._callback(self.on_ping, frame.data)
             self.ws.pong("")
-            self.logger.debug("Received Ping; PONG frame sent back")
+            # self.logger.debug("Received Ping; PONG frame sent back")
         elif op_code == ABNF.OPCODE_PONG:
             self.logger.debug("Received PONG frame")
             self._callback(self.on_pong)

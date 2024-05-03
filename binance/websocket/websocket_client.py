@@ -12,6 +12,7 @@ class BinanceWebsocketClient:
 
     def __init__(
         self,
+        ctx,
         stream_url,
         on_message=None,
         on_open=None,
@@ -27,6 +28,7 @@ class BinanceWebsocketClient:
             logger = logging.getLogger(__name__)
         self.logger = logger
         self.socket_manager = self._initialize_socket(
+            ctx,
             stream_url,
             on_message,
             on_open,
@@ -45,6 +47,7 @@ class BinanceWebsocketClient:
 
     def _initialize_socket(
         self,
+        ctx,
         stream_url,
         on_message,
         on_open,
@@ -57,6 +60,7 @@ class BinanceWebsocketClient:
         proxies,
     ):
         return BinanceSocketManager(
+            ctx,
             stream_url,
             on_message=on_message,
             on_open=on_open,

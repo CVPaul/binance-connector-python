@@ -100,7 +100,16 @@ if __name__ == "__main__":
         else: # close order
             if o['side'] == 'SELL': # long close
                 if long_open:
-                    ord = long_open.pop()
+                    # ord = long_open.pop()
+                    oid = int(o['clientOrderId'].split('_')[-1])
+                    ord = None
+                    for i in range(len(long_open)):
+                        if long_open[i]['orderId'] == oid:
+                            ord = long_open[i]
+                            long_open = long_open[:i] + long_open[i+1:]
+                            break
+                    if not ord:
+                        continue
                     assert o['executedQty'] == ord['executedQty']
                     trans.append([
                         1, o['executedQty'], ord['time'], ord['avgPrice'],
@@ -112,7 +121,16 @@ if __name__ == "__main__":
                     print(df)
             else:
                 if short_open:
-                    ord = short_open.pop()
+                    # ord = short_open.pop()
+                    oid = int(o['clientOrderId'].split('_')[-1])
+                    ord = None
+                    for i in range(len(short_open)):
+                        if short_open[i]['orderId'] == oid:
+                            ord = short_open[i]
+                            short_open = short_open[:i] + short_open[i+1:]
+                            break
+                    if not ord:
+                        continue
                     assert o['executedQty'] == ord['executedQty']
                     trans.append([
                         -1, o['executedQty'], ord['time'], ord['avgPrice'],

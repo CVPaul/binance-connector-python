@@ -31,15 +31,13 @@ if __name__ == "__main__":
     args = parser.parse_args()
     # global
     if not args.symbol:
-        args.symbol = [f"{x}USD_PERP" for x in ['DOGE', 'BTC']]
+        args.symbol = [f"{x}USD_PERP" for x in ['DOGE', 'BTC', 'BNB']]
     else:
         args.symbol = args.symbol.split(',') 
     api_key, private_key = get_auth_keys()
     client = CoinM(
         api_key=api_key,
-        private_key=private_key,
-    )
-
+        private_key=private_key)
     cutline_len = 145
     print("=" * cutline_len)
     print(f"market info board:")
