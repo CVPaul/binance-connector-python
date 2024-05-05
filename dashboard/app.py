@@ -223,8 +223,12 @@ def main():
     with st.sidebar:
         ratio = st.selectbox(
             '手续费率：', options=[0.0002, 0.0005])
+        pid = st.selectbox(
+            'kill进程：', options=[default] + df.pid.values.tolist())
+        if pid != default:
+            os.system(f'kill -9 {pid}')
         symbol = st.selectbox(
-            "币种：", options=[default, "BTC", "BNB", "DOGE"])
+            '币种：', options=[default, "BTC", "BNB", "DOGE"])
         if symbol in {default}:
             symbol = "*"
         else:
