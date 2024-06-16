@@ -27,7 +27,6 @@ examples/*.ini
 *.json
 data
 *.tar.gz
-strategy
 *.csv
 .conda
 *.swp
