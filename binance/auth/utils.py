@@ -4,7 +4,6 @@
 
 import os
 import logging
-import streamlit as st
 import subprocess as sb
 
 
@@ -24,10 +23,8 @@ def get_auth_keys(src='env'):
         api_key = os.environ.get('API_KEY')
         prv_key = os.environ.get('PRV_KEY')
         prv_key = f'{stt_lin}\n{prv_key}\n{end_lin}'
-    elif src == 'secret':
-        api_key = st.secrets['API_KEY']
-        prv_key = st.sectets['PRV_KEY']
-        prv_key = f'{stt_lin}\n{prv_key}\n{end_lin}'
+    else:
+        raise RuntimeError(f'unsupported src:{src}')
     return api_key, prv_key
 
 

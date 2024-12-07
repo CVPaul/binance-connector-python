@@ -12,7 +12,8 @@ import pandas as pd
 from binance.futures import CoinM
 from datetime import datetime as dt
 from datetime import timedelta as td
-from strategy.common.utils import get_auth_keys
+# from strategy.common.utils import get_auth_keys
+from binance.auth.utils import get_auth_keys
 
 from binance.websocket.futures.coin_m.stream import CoinMWSSStreamClient
 
@@ -24,8 +25,30 @@ def on_message(self, message):
     e = message.get('e', '')
     print(json.dumps(message, indent=4))
 
+from scapy.all import sniff, IP
+from threading import Thread
+
+# 定义一个函数来处理捕获的包
+def packet_handler(packet):
+    if packet.haslayer(IP):
+        print(f"捕获到的IP包，源地址：{packet[IP].src}，目的地址：{packet[IP].dst}")
+
+# 定义一个函数来启动 Scapy 抓包
+def start_sniffing():
+    sniff(filter="ip", prn=packet_handler, store=0)
+
+# 你的主程序逻辑
+def main():
+    # 启动 Scapy 抓包的线程
+    sniff_thread = Thread(target=start_sniffing)
+    sniff_thread.start()
+
+    # 这里可以放置你的其他主程序逻辑
+    # ...
+
 
 if __name__ == "__main__":
+    main()
 
     api_key, private_key = get_auth_keys()
 
@@ -45,7 +68,8 @@ if __name__ == "__main__":
             'volume', 'end_t', 'amount', 'trade_cnt',
             'taker_vol', 'taker_amt', 'reserved'
         ])
-    df.to_csv('8h.csv')
+    df.start_t = pd.to_datetime(df.start_t * 1e6)
+    print(df)
 
     # print(rsp)
     # acc = client.exchange_info(symbol)

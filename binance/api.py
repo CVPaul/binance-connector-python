@@ -114,6 +114,8 @@ class API(object):
                 "proxies": self.proxies,
             }
         )
+        print(url)
+        print(params)
         response = self._dispatch_request(http_method)(**params)
         self._logger.debug("raw response from server:" + response.text)
         self._handle_exception(response)
